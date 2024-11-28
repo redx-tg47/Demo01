@@ -1,0 +1,31 @@
+name: Build and Deploy
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build project
+        run: echo "Building project..." > build.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: build.txt  # Uploads the "build.txt" file
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ensure build job completes first
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+
+      - name: Deploy project
+        run: cat build.txt  # Simulates deployment by outputting the contents
